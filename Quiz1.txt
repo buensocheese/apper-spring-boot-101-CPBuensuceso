@@ -1,0 +1,17 @@
+1. Java Enterprise Edition
+
+2. Repetitive sections of code that needs to be included in multiple places/application.
+Like a template that can be used as a starting point for a project.
+
+3. Spring Framework
+
+4. Pivotal Software
+
+5. https://start.spring.io/
+
+6. Self-contained, can be run without needing external web server or container, a microservice
+
+7 - 9. allows objects to receive dependencies from external source. Instead of making everything from
+scratch, you just ask for something buy you can get the whole complete thing.
+
+10. mvn clean spring-boot:run
