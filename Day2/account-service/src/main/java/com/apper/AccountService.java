@@ -4,18 +4,26 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AccountService {
 
-    private List<Account> accounts = new ArrayList<>();
+    private final List<Account> accounts = new ArrayList<>();
+    private final IdGeneratorService idGeneratorService;
+
+    public AccountService(IdGeneratorService idGeneratorService) {
+        this.idGeneratorService = idGeneratorService;
+    }
 
     public Account create(String firstName, String lastName, String username, String clearPassword) {
         Account account = new Account();
-        String id = UUID.randomUUID().toString();
+
+        String id = idGeneratorService.getNextId();
         System.out.println("Generated id: " + id);
+
         account.setId(id);
         account.setBalance(1_000.0);
 
@@ -27,7 +35,7 @@ public class AccountService {
         account.setLastName(lastName);
         account.setUsername(username);
         account.setClearPassword(clearPassword);
-        account.setVerificationCode("QW345T");
+        account.setVerificationCode(idGeneratorService.generateRandomCharacters(6));
 
         accounts.add(account);
 
@@ -40,19 +48,34 @@ public class AccountService {
                 return account;
             }
         }
-
         return null;
     }
 
     public List<Account> getAll() {
         return accounts;
     }
-//
-//    public void update() {
-//
-//    }
-//
-//    public void delete() {
-//
-//    }
+
+    public Account update(String accountId, String firstName, String lastName, String email, String password) {
+        Account account = get(accountId);
+        if (account != null) {
+            account.setFirstName(firstName);
+            account.setLastName(lastName);
+            account.setEmail(email);
+            account.setPassword(password);
+            account.setLastUpdated(LocalDateTime.now());
+        }
+        return account;
+    }
+
+    public void delete(String accountId) {
+        Iterator<Account> iterator = accounts.iterator();
+        while (iterator.hasNext()) {
+            Account account = iterator.next();
+            if (account.getId().equals(accountId)) {
+                iterator.remove();
+                break;
+            }
+        }
+    }
 }
+

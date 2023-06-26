@@ -3,7 +3,7 @@ package com.apper;
 import lombok.Data;
 
 @Data
-public class CreateAccountRequest {
+public class UpdateAccountRequest {
 
     private String firstName;
     private String lastName;
