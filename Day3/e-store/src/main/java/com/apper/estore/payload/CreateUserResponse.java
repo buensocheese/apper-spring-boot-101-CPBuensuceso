@@ -1,4 +1,4 @@
-package com.apper.estore;
+package com.apper.estore.payload;
 
 public class CreateUserResponse {
 

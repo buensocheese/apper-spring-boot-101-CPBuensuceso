@@ -1,5 +1,6 @@
 package com.apper.estore;
 
+import com.apper.estore.payload.ServiceError;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
