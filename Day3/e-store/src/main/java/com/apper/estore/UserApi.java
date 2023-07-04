@@ -14,9 +14,14 @@ public class UserApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateUserResponse createUser(@RequestBody @Valid CreateUserRequest request) {
+    public CreateUserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
+
+        // Age Condition and Error Message
+        if (!request.isAgeValid()) {
+            throw new RuntimeException("User must be at least 15 years old");
+        }
+
         System.out.println(request);
         return new CreateUserResponse();
     }
-
 }

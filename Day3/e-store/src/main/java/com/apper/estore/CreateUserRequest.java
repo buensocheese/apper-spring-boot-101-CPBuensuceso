@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+// Added necessary packages
+import java.time.LocalDate;
+import java.time.Period;
+
 @Data
 public class CreateUserRequest {
     @NotBlank(message = "`email` is required")
@@ -30,6 +34,14 @@ public class CreateUserRequest {
 
     @JsonProperty("birth_date")
     @NotBlank(message = "`birth_date` is required")
-    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}", message = "Invalid birth date format")
     private String birthDate;
+
+    // Age Checker based on birthDate
+    public boolean isAgeValid() {
+        LocalDate today = LocalDate.now();
+        LocalDate parsedBirthDate = LocalDate.parse(birthDate);
+        int age = Period.between(parsedBirthDate, today).getYears();
+        return age >= 15;
+    }
 }
