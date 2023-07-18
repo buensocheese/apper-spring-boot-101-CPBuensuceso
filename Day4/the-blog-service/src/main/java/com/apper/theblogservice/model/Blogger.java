@@ -1,16 +1,10 @@
 package com.apper.theblogservice.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "BLOGGER")
@@ -48,5 +42,8 @@ public class Blogger {
     public void setLastUpdate() {
         lastUpdate = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "blogger", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Blog> blogs;
 
 }
