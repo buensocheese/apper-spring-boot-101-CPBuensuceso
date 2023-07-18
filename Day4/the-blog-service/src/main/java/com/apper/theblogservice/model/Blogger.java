@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,34 +17,34 @@ public class Blogger {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "COMPLETE_NAME")
+    @Column(name = "Complete_Name")
     private String name;
 
-    @Column(name = "EMAIL")
-    private String email;
-
-    @Column(name = "PASSWORD")
+    @Column(name = "Password")
     private String password;
 
-    @Column(name = "CREATED_AT")
+    @Column(name = "Email") // Unique constraint: no duplicate email addresses.
+    private String email;
+
+    @Column(name = "Created_At")
     private LocalDateTime createdAt;
 
-    @Column(name = "LAST_UPDATE")
-    private LocalDateTime lastUpdate;
+    @Column(name = "Last_Updated")
+    private LocalDateTime lastUpdated;
 
+    @OneToMany(mappedBy = "Blogger", cascade = CascadeType.ALL)
+    private List<Blog> blogs = new ArrayList<>();
+
+    // Set createdAt and lastUpdated before entity persistence.
     @PrePersist
-    public void setInitialTimestamp() {
-        LocalDateTime now = LocalDateTime.now();
-        createdAt = now;
-        lastUpdate = now;
+    public void setCreatedAt() {
+        createdAt = LocalDateTime.now();
+        lastUpdated = LocalDateTime.now();
     }
 
+    // Update lastUpdated before entity update.
     @PreUpdate
-    public void setLastUpdate() {
-        lastUpdate = LocalDateTime.now();
+    public void setLastUpdated() {
+        lastUpdated = LocalDateTime.now();
     }
-
-    @OneToMany(mappedBy = "blogger", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Blog> blogs;
-
 }

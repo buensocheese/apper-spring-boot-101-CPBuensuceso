@@ -6,16 +6,19 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class CreateBlogResponse {
-    @JsonProperty("id")
-    private String id;
-
+public class BlogDetails {
     @JsonProperty("blogger_id")
     private String bloggerId;
 
-    @JsonProperty("created_at")
-    private LocalDateTime dateCreated;
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("body")
+    private String body;
+
+    @JsonProperty("date_created")
+    private LocalDateTime createdDate;
 
     @JsonProperty("last_updated")
-    private LocalDateTime lastUpdated;
+    private LocalDateTime updatedDate;
 }

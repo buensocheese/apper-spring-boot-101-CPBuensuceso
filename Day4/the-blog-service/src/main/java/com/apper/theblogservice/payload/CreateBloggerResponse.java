@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class CreateBloggerResponse {
     private String id;
 
+    // Date Format
     @JsonProperty("date_registration")
     private LocalDateTime dateRegistration;
 }

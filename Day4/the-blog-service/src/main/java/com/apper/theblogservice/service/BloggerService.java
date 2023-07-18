@@ -1,16 +1,17 @@
 package com.apper.theblogservice.service;
 
-import com.apper.theblogservice.model.Blogger;
+import com.apper.theblogservice.exception.BlogNotFoundException;
+import com.apper.theblogservice.exception.BloggerNotFoundException;
 import com.apper.theblogservice.model.Blog;
-import com.apper.theblogservice.repository.BloggerRepository;
+import com.apper.theblogservice.model.Blogger;
 import com.apper.theblogservice.repository.BlogRepository;
+import com.apper.theblogservice.repository.BloggerRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class BloggerService {
@@ -23,58 +24,81 @@ public class BloggerService {
         this.blogRepository = blogRepository;
     }
 
+    // Create a new blogger
     public Blogger createBlogger(String email, String name, String password) {
-        Optional<Blogger> existingBlogger = bloggerRepository.findByEmail(email);
-        if (existingBlogger.isPresent()) {
-            throw new IllegalArgumentException("Email is already registered");
-        }
-
         Blogger blogger = new Blogger();
         blogger.setEmail(email);
         blogger.setName(name);
         blogger.setPassword(password);
-
         return bloggerRepository.save(blogger);
     }
 
-    public Blogger getBlogger(String id) {
-        return bloggerRepository.findById(id).orElse(null);
+    // Check if blogger ID exists
+    public boolean isIdExisting(String id) {
+        return bloggerRepository.existsById(id);
     }
 
-    public List<Blogger> getAllBloggers() {
+    // Get blogger by ID
+    public Blogger getBlogger(String id) {
+        Optional<Blogger> bloggerResult = bloggerRepository.findById(id);
+        return bloggerResult.get();
+    }
+
+    // Check if email is already used by another blogger
+    public boolean isEmailAlreadyUsed(String email) {
+        return bloggerRepository.existsByEmail(email);
+    }
+
+    // Get all bloggers
+    public List<Blogger> getAllBlogger() {
         return (List<Blogger>) bloggerRepository.findAll();
     }
 
-    public Blog createBlog(Blog blog) {
+    // Create a new blog for a blogger
+    public Blog createBlog(String title, String body, String bloggerId) {
+        Blogger blogger = getBlogger(bloggerId);
+
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setBody(body);
+        blog.setDateCreated(LocalDateTime.now());
+        blog.setLastUpdated(LocalDateTime.now());
+        blog.setBlogger(blogger);
         return blogRepository.save(blog);
     }
 
-    public Blog updateBlog(String blogId, String title, String body) {
-        Blog blog = blogRepository.findById(blogId).orElse(null);
-        if (blog != null) {
-            blog.setTitle(title);
-            blog.setBody(body);
-            blog.setLastUpdated(LocalDateTime.now());
-
-            return blogRepository.save(blog);
-        } else {
-            return null;
+    // Get blog by ID
+    public Blog getBlog(String blogId) throws BlogNotFoundException {
+        Optional<Blog> blogResult = blogRepository.findById(blogId);
+        if(blogResult.isEmpty()){
+            throw new BlogNotFoundException("Blog not found with Id: " + blogId);
         }
+        return blogResult.get();
     }
 
-    public Blog getBlog(String blogId) {
-        return blogRepository.findById(blogId).orElse(null);
+    // Update a blog's title and body
+    public Blog updateBlog(String blogId, String title, String body) throws BlogNotFoundException{
+        Blog blog = getBlog(blogId);
+        blog.setTitle(title);
+        blog.setBody(body);
+        return blogRepository.save(blog);
     }
 
-    public List<Blog> getAllBlogs() {
-        return StreamSupport.stream(blogRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    // Get all blogs
+    public List<Blog> getAllBlog() {
+        return (List<Blog>) blogRepository.findAll();
     }
 
-    public List<Blog> getAllBlogsByBlogger(String bloggerId) {
-        return blogRepository.findByBloggerId(bloggerId);
+    // Get blogs by blogger ID
+    public List<Blog> getBlogsByBlogger(String bloggerId) throws BloggerNotFoundException {
+        if (!bloggerRepository.existsById(bloggerId)) {
+            throw new BloggerNotFoundException("Blogger ID Not Found");
+        }
+        Optional<Blogger> bloggerResult = bloggerRepository.findById(bloggerId);
+        if (bloggerResult.isPresent()) {
+            Blogger blogger = bloggerResult.get();
+            return blogger.getBlogs();
+        }
+        return new ArrayList<>();
     }
-
-
 }
-

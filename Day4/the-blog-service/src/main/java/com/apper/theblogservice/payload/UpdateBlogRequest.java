@@ -5,21 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class CreateBlogRequest {
+public class UpdateBlogRequest {
 
     // Title Requirements
     @JsonProperty("title")
-    @NotBlank(message = "Title is required.")
+    @NotBlank(message = "Title is required")
     private String title;
 
     // Body Requirements
     @JsonProperty("body")
-    @NotBlank(message = "Body is required.")
+    @NotBlank(message = "Body is required")
     private String body;
-
-    // ID Requirements
-    @JsonProperty("blogger_id")
-    @NotBlank(message = "Blogger ID is required.")
-    private String bloggerId;
 
 }

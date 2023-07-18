@@ -7,15 +7,17 @@ import lombok.Data;
 
 @Data
 public class CreateBloggerRequest {
-
-    @NotBlank(message = "Email is required")
+    // Email Requirements
+    @NotBlank(message = "`email` is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Name is required")
-    private String name;
-
-    @NotBlank(message = "Password is required")
-    @Size(min = 5, message = "Password must be at least 5 characters")
+    // Password Requirements
+    @Size(min = 5, message = "`password` must be at least 5 characters")
+    @NotBlank(message = "`password` is required")
     private String password;
+
+    // Name Requirements
+    @NotBlank(message = "`Name` is required")
+    private String name;
 }
